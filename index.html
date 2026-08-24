@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Astra Kids Academy | Learning Pathway Assessment</title>
+<meta name="description" content="Discover which Astra Kids Academy learning studio best matches your child's strengths and aspirations — AI &amp; Digital Literacy, Entrepreneurship, Creative, Project Management, or Innovation.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>✨</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<div class="stars" aria-hidden="true"></div>
+
+<header class="site-header">
+  <div class="brand">
+    <span class="brand-mark">✨</span>
+    <span class="brand-name">Astra Kids Academy</span>
+  </div>
+  <p class="site-tagline">Learning Pathway Assessment</p>
+</header>
+
+<main id="app" class="app">
+
+  <!-- ================= INTRO SCREEN ================= -->
+  <section id="screen-intro" class="screen" data-screen="intro">
+    <div class="card intro-card">
+      <h1>Find Your Child's Learning Studio</h1>
+      <p class="lede">
+        Every child already has a spark &mdash; a subject they can't stop talking about, a skill
+        they picked up on their own, a dream they keep circling back to. This assessment helps
+        parents and students (ages 10&ndash;17) spot that spark and match it to the Astra Kids
+        Academy studio designed to nurture it further.
+      </p>
+
+      <ul class="intro-points">
+        <li><strong>12 quick scenarios</strong> &mdash; about 5 minutes, no right or wrong answers</li>
+        <li><strong>A strengths profile</strong> across all five studios, not just one label</li>
+        <li><strong>A recommended studio</strong> matched to existing skills and aspirations</li>
+      </ul>
+
+      <form id="intro-form" class="intro-form" novalidate>
+        <div class="field">
+          <label for="child-name">Child's first name <span class="optional">(optional)</span></label>
+          <input type="text" id="child-name" name="childName" maxlength="40" autocomplete="off" placeholder="e.g. Amara">
+        </div>
+
+        <div class="field">
+          <label for="child-age">Child's age <span class="required">(required, 10&ndash;17)</span></label>
+          <input type="number" id="child-age" name="childAge" min="10" max="17" required inputmode="numeric" placeholder="e.g. 13">
+          <p class="field-error" id="age-error" role="alert" hidden>Please enter an age between 10 and 17.</p>
+        </div>
+
+        <fieldset class="field">
+          <legend>Who's completing this assessment?</legend>
+          <div class="radio-row">
+            <label class="radio-pill">
+              <input type="radio" name="respondent" value="student" checked>
+              <span>The student, answering for myself</span>
+            </label>
+            <label class="radio-pill">
+              <input type="radio" name="respondent" value="parent">
+              <span>A parent or guardian, answering for my child</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <p class="parent-note" id="parent-note" hidden>
+          Answer each scenario based on what you've observed &mdash; the activities your child
+          gravitates toward, talks about most, or naturally takes the lead on.
+        </p>
+
+        <button type="submit" class="btn btn-primary btn-large">Start the Assessment</button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ================= QUIZ SCREEN ================= -->
+  <section id="screen-quiz" class="screen" data-screen="quiz" hidden>
+    <div class="quiz-progress-wrap">
+      <div class="quiz-progress-track">
+        <div id="quiz-progress-fill" class="quiz-progress-fill"></div>
+      </div>
+      <p class="quiz-progress-label"><span id="question-index">1</span> of <span id="question-total">12</span></p>
+    </div>
+
+    <div class="card quiz-card">
+      <h2 id="question-text" class="question-text"></h2>
+      <div id="options-list" class="options-list" role="radiogroup" aria-labelledby="question-text"></div>
+    </div>
+
+    <div class="quiz-nav">
+      <button type="button" id="btn-back" class="btn btn-ghost" disabled>&larr; Back</button>
+      <button type="button" id="btn-restart-mid" class="btn btn-text">Start over</button>
+    </div>
+  </section>
+
+  <!-- ================= RESULTS SCREEN ================= -->
+  <section id="screen-results" class="screen" data-screen="results" hidden>
+    <div class="card results-hero">
+      <p class="results-eyebrow" id="results-eyebrow">Recommended Studio</p>
+      <div class="results-studio">
+        <span id="result-icon" class="result-icon" aria-hidden="true"></span>
+        <h1 id="result-title" class="result-title"></h1>
+      </div>
+      <p id="result-summary" class="result-summary"></p>
+      <p id="result-description" class="result-description"></p>
+
+      <div class="grow-box">
+        <h3>What this studio will grow</h3>
+        <ul id="result-skills" class="skills-list"></ul>
+      </div>
+    </div>
+
+    <div class="card secondary-card" id="secondary-card" hidden>
+      <h3>Also showing strong potential in <span id="secondary-title"></span></h3>
+      <p id="secondary-description"></p>
+    </div>
+
+    <div class="card profile-card">
+      <h3>Full Strengths Profile</h3>
+      <p class="profile-sub">How this child's responses distributed across all five studios.</p>
+      <div id="profile-bars" class="profile-bars"></div>
+    </div>
+
+    <div class="card cta-card">
+      <h3>Next Step</h3>
+      <p>
+        Share these results with the Astra Kids Academy enrollment team to place
+        <span id="cta-name">your child</span> in the studio &mdash; or a blended track &mdash;
+        that fits best.
+      </p>
+      <div class="cta-actions">
+        <a id="btn-email-results" class="btn btn-primary" href="#">Email These Results</a>
+        <button type="button" id="btn-print" class="btn btn-ghost">Print / Save PDF</button>
+        <button type="button" id="btn-restart-end" class="btn btn-text">Retake Assessment</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="site-footer">
+  <p>Astra Kids Academy &middot; Learning Pathway Assessment &middot; Designed for ages 10&ndash;17</p>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
