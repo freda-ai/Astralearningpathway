@@ -133,3 +133,32 @@ describe("dashboard", () => {
     expect(filterTasks(tasks, [ada, ben], { stakeholderId: "ben" })).toHaveLength(2);
   });
 });
+
+describe("progress series", () => {
+  const metric = { target: 100, baseline: 0, current: null, deadline: null, createdAt: "2026-11-01T00:00:00Z" };
+  it("uses cumulative completions when there are no value entries", async () => {
+    const { progressSeries } = await import("@/lib/domain/metrics");
+    const s = progressSeries(
+      metric,
+      [
+        { status: "completed", completedAt: "2026-11-05T10:00:00Z" },
+        { status: "completed", completedAt: "2026-11-05T12:00:00Z" },
+        { status: "pending", completedAt: null },
+        { status: "pending", completedAt: null },
+      ],
+      [],
+      today,
+    );
+    expect(s).toEqual([
+      { date: "2026-11-01", pct: 0 },
+      { date: "2026-11-05", pct: 50 },
+      { date: today, pct: 50 },
+    ]);
+  });
+
+  it("uses value entries when measured against a target", async () => {
+    const { progressSeries } = await import("@/lib/domain/metrics");
+    const s = progressSeries(metric, [], [{ value: 40, createdAt: "2026-11-10T00:00:00Z" }, { value: 25, createdAt: "2026-11-08T00:00:00Z" }], "2026-11-10");
+    expect(s.map((p) => p.pct)).toEqual([0, 25, 40]);
+  });
+});

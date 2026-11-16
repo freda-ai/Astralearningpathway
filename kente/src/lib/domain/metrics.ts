@@ -83,3 +83,44 @@ export const METRIC_STATUS_LABEL: Record<MetricStatus, string> = {
   behind: "Behind",
   achieved: "Achieved",
 };
+
+export interface SeriesPoint {
+  date: string;
+  pct: number;
+}
+
+const day = (d: Date | string) => (typeof d === "string" ? d : d.toISOString()).slice(0, 10);
+
+/**
+ * Progress over time for the outcome chart. Uses manual value entries when the
+ * metric is measured against a target, otherwise cumulative task completions.
+ */
+export function progressSeries(
+  metric: MetricLike,
+  tasks: { status: string; completedAt: Date | string | null }[],
+  updates: { value: number; createdAt: Date | string }[],
+  today: string,
+): SeriesPoint[] {
+  const points: SeriesPoint[] = [{ date: day(metric.createdAt), pct: 0 }];
+  if (metric.target !== null && updates.length) {
+    const base = metric.baseline ?? 0;
+    const span = metric.target - base;
+    for (const u of [...updates].sort((a, b) => day(a.createdAt).localeCompare(day(b.createdAt)))) {
+      const pct = span === 0 ? (u.value >= metric.target ? 100 : 0) : clamp(((u.value - base) / span) * 100);
+      points.push({ date: day(u.createdAt), pct: Math.round(pct) });
+    }
+  } else if (tasks.length) {
+    const done = tasks
+      .filter((t) => t.status === "completed" && t.completedAt)
+      .map((t) => day(t.completedAt!))
+      .sort();
+    done.forEach((d, i) => points.push({ date: d, pct: Math.round(((i + 1) / tasks.length) * 100) }));
+  }
+  // One point per day (the latest wins), carried forward to today.
+  const byDay = new Map<string, number>();
+  for (const p of points) byDay.set(p.date, p.pct);
+  const out = [...byDay].map(([date, pct]) => ({ date, pct })).sort((a, b) => a.date.localeCompare(b.date));
+  const last = out[out.length - 1];
+  if (last.date < today) out.push({ date: today, pct: last.pct });
+  return out;
+}
