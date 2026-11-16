@@ -162,3 +162,39 @@ describe("progress series", () => {
     expect(s.map((p) => p.pct)).toEqual([0, 25, 40]);
   });
 });
+
+describe("programme brief", () => {
+  it("summarises done, pending, next steps and at-risk outcomes from the data only", async () => {
+    const { programmeBrief } = await import("@/lib/domain/brief");
+    const b = programmeBrief(
+      [
+        { title: "Recruit cohort", status: "completed", dueDate: "2026-11-15", completedAt: "2026-11-17T09:00:00Z", assigneeName: "Ada" },
+        { title: "Book venue", status: "pending", dueDate: "2026-11-10", completedAt: null, assigneeName: "Ben" },
+        { title: "Print materials", status: "in_progress", dueDate: "2026-11-20", completedAt: null, assigneeName: null },
+      ],
+      [
+        { title: "Train 500 founders", status: "behind", pct: 12, deadline: "2027-06-30" },
+        { title: "Raise funds", status: "on_track", pct: 40, deadline: null },
+      ],
+      "week",
+      today,
+    );
+    expect(b.done).toEqual(["1 task completed this week: “Recruit cohort”."]);
+    expect(b.pending[0]).toBe("2 open tasks, 1 in progress and 1 overdue.");
+    expect(b.next[0]).toBe("Follow up on “Book venue” with Ben, 8 days overdue.");
+    expect(b.next[1]).toBe("“Print materials” is due on 20 Nov 2026.");
+    expect(b.next[2]).toBe("Assign an owner to “Print materials”.");
+    expect(b.atRisk).toEqual(["“Train 500 founders” is behind: 12% achieved, deadline 30 Jun 2027."]);
+  });
+
+  it("handles an empty programme", async () => {
+    const { programmeBrief } = await import("@/lib/domain/brief");
+    const b = programmeBrief([], [], "today", today);
+    expect(b).toEqual({
+      done: ["No tasks completed today yet."],
+      pending: ["No tasks have been planned yet."],
+      next: ["Plan the first tasks in the Log."],
+      atRisk: [],
+    });
+  });
+});

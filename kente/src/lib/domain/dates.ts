@@ -16,6 +16,9 @@ export function daysBetween(fromIso: string, toIso: string): number {
 
 export type Period = "today" | "week" | "month";
 
+/** Cookie holding the user's preferred dashboard period. */
+export const PERIOD_COOKIE = "kente_period";
+
 /** Inclusive [start, end] ISO date range for a dashboard period. Weeks start on Monday. */
 export function periodRange(period: Period, today: string): { start: string; end: string } {
   if (period === "today") return { start: today, end: today };

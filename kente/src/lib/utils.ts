@@ -6,6 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function initials(name: string): string {
-  const parts = name.trim().split(/[\s@._-]+/).filter(Boolean);
+  const parts = name
+    .replace(/\(.*?\)/g, "")
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(Boolean);
   return ((parts[0]?.[0] ?? "?") + (parts[1]?.[0] ?? "")).toUpperCase();
 }

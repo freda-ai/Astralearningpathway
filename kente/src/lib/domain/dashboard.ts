@@ -24,7 +24,7 @@ export function taskCounts(tasks: TaskLike[], today: string) {
 }
 
 /** Tasks a stakeholder is accountable for: assigned directly, or via their team. */
-function tasksFor(s: DashStakeholder, tasks: DashTask[]) {
+function tasksFor<T extends DashTask>(s: DashStakeholder, tasks: T[]): T[] {
   return tasks.filter(
     (t) => t.assigneeStakeholderId === s.id || (t.assigneeStakeholderId === null && t.teamId !== null && t.teamId === s.teamId),
   );
@@ -74,11 +74,11 @@ export function periodActivity(tasks: DashTask[], period: Period, today: string)
   };
 }
 
-export function filterTasks(
-  tasks: DashTask[],
+export function filterTasks<T extends DashTask>(
+  tasks: T[],
   stakeholders: DashStakeholder[],
   filter: { teamId?: string | null; stakeholderId?: string | null },
-): DashTask[] {
+): T[] {
   let out = tasks;
   if (filter.teamId) {
     const memberIds = new Set(stakeholders.filter((s) => s.teamId === filter.teamId).map((s) => s.id));

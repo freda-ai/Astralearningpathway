@@ -100,3 +100,29 @@ export function Sidebar({ workspaceName, programmes }: SidebarProps) {
     </aside>
   );
 }
+
+/** Module links for small screens, where the sidebar is hidden. */
+export function MobileNav() {
+  const { pid } = useParams<{ pid?: string }>();
+  const pathname = usePathname();
+  if (!pid) return null;
+  const section = pathname.split("/")[3] ?? "dashboard";
+  return (
+    <nav aria-label="Programme modules" className="flex gap-1 overflow-x-auto border-b border-line bg-ink px-3 py-2 lg:hidden">
+      {NAV.map(({ slug, label, icon: Icon }) => (
+        <Link
+          key={slug}
+          href={`/p/${pid}/${slug}`}
+          aria-current={section === slug ? "page" : undefined}
+          className={cn(
+            "flex shrink-0 items-center gap-1.5 rounded-md px-3 py-1.5 text-sm",
+            section === slug ? "bg-gold text-ink font-medium" : "text-cream/80",
+          )}
+        >
+          <Icon className="size-4" />
+          {label}
+        </Link>
+      ))}
+    </nav>
+  );
+}

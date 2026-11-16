@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Sidebar } from "@/components/shell/sidebar";
+import { MobileNav, Sidebar } from "@/components/shell/sidebar";
 import { Topbar } from "@/components/shell/topbar";
 import { displayName } from "@/lib/auth/session";
 import { listProgrammes, requireWorkspace } from "@/lib/data/context";
@@ -20,6 +20,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             programmes={programmes}
           />
         </Suspense>
+        <MobileNav />
         <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 lg:px-8">{children}</main>
       </div>
     </div>
