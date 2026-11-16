@@ -4,6 +4,8 @@ Programme and project management for organisations that deliver programmes. Ever
 
 Requirements: [docs/PRD.md](docs/PRD.md) · Data model and build order: [docs/TECH-SPEC.md](docs/TECH-SPEC.md) · Status: [docs/PROGRESS.md](docs/PROGRESS.md)
 
+![Dashboard](docs/screenshots/dashboard.png)
+
 ## Run locally
 
 ```bash
